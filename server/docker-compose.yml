@@ -1,6 +1,6 @@
 services:
   mongodb:
-    image: mongo:latest
+    image: prismagraphql/mongo-single-replica:5.0.3
     container_name: bookmate
     ports:
       - "27017:27017"
