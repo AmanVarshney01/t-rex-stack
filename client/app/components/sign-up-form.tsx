@@ -23,7 +23,7 @@ const signUpSchema = signInSchema.extend({
   name: z.string().min(2, "Name must be at least 2 characters"),
 });
 
-export default function Welcome() {
+export default function SignUpForm() {
   const [isSignUp, setIsSignUp] = useState(false);
 
   const form = useForm<z.infer<typeof signUpSchema>>({
@@ -54,7 +54,7 @@ export default function Welcome() {
               message: ctx.error.message,
             });
           },
-        }
+        },
       );
     } else {
       await authClient.signIn.email(
@@ -72,18 +72,14 @@ export default function Welcome() {
               message: ctx.error.message,
             });
           },
-        }
+        },
       );
     }
   };
 
-  const handleSignOut = async () => {
-    await authClient.signOut();
-  };
-
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 rounded-lg shadow-md">
-      <h1 className="text-3xl font-bold text-center mb-6">
+    <div className="mx-auto mt-10 max-w-md p-6">
+      <h1 className="mb-6 text-center text-3xl font-bold">
         Welcome to Bookmate
       </h1>
 
