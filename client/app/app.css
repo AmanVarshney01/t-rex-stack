@@ -63,6 +63,6 @@
     @apply border-border;
   }
   body {
-    @apply font-sans bg-background text-foreground;
+    @apply dark bg-background font-sans text-foreground;
   }
 }

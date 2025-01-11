@@ -8,23 +8,26 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { signIn, signUp, useSession } from "@/lib/auth-client";
+import { signInSchema, signUpSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { Loader, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
+import { toast } from "sonner";
 import * as z from "zod";
-import { authClient } from "../../lib/auth-client";
-
-const signInSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
-});
-
-const signUpSchema = signInSchema.extend({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-});
 
 export default function SignUpForm() {
+  let navigate = useNavigate();
+  const { data: session, isPending } = useSession();
   const [isSignUp, setIsSignUp] = useState(false);
+
+  useEffect(() => {
+    if (session) {
+      navigate("/dashboard");
+    }
+  }, [session]);
 
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(isSignUp ? signUpSchema : signInSchema),
@@ -37,16 +40,16 @@ export default function SignUpForm() {
 
   const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
     if (isSignUp) {
-      await authClient.signUp.email(
+      await signUp.email(
         {
           email: values.email,
           password: values.password,
           name: values.name,
-          image: undefined,
         },
         {
           onSuccess: () => {
-            alert("Sign up successful");
+            toast.success("Sign up successful");
+            navigate("/dashboard");
           },
           onError: (ctx) => {
             form.setError("email", {
@@ -57,14 +60,15 @@ export default function SignUpForm() {
         },
       );
     } else {
-      await authClient.signIn.email(
+      await signIn.email(
         {
           email: values.email,
           password: values.password,
         },
         {
           onSuccess: () => {
-            alert("Sign in successful");
+            toast.success("Sign in successful");
+            navigate("/dashboard");
           },
           onError: (ctx) => {
             form.setError("email", {
@@ -77,12 +81,19 @@ export default function SignUpForm() {
     }
   };
 
+  if (isPending) {
+    return (
+      <div className="flex h-svh items-center justify-center">
+        <Loader2 size="48" className="animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto mt-10 max-w-md p-6">
       <h1 className="mb-6 text-center text-3xl font-bold">
         Welcome to Bookmate
       </h1>
-
       <div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -101,7 +112,6 @@ export default function SignUpForm() {
                 )}
               />
             )}
-
             <FormField
               control={form.control}
               name="email"
@@ -115,7 +125,6 @@ export default function SignUpForm() {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="password"
@@ -129,13 +138,11 @@ export default function SignUpForm() {
                 </FormItem>
               )}
             />
-
             <Button type="submit" className="w-full">
               {isSignUp ? "Sign Up" : "Sign In"}
             </Button>
           </form>
         </Form>
-
         <div className="mt-4 text-center">
           <Button
             variant="link"
