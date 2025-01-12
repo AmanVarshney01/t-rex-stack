@@ -4,6 +4,7 @@ import express from "express";
 import { auth } from "./lib/auth";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { appRouter } from "./routers";
+import { createContext } from "./lib/context";
 
 const app = express();
 const PORT = 8080;
@@ -17,18 +18,11 @@ app.use(
   }),
 );
 
-app.use("/trpc", createExpressMiddleware({ router: appRouter }));
-
 app.all("/api/auth/*", toNodeHandler(auth));
 
-app.use(express.json());
+app.use("/trpc", createExpressMiddleware({ router: appRouter, createContext }));
 
-// app.get("/api/me", async (req, res) => {
-//   const session = await auth.api.getSession({
-//     headers: fromNodeHeaders(req.headers),
-//   });
-//   res.json(session);
-// });
+app.use(express.json());
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
