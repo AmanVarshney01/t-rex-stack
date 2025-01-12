@@ -1,3 +1,10 @@
+import { Toaster } from "@/components/ui/sonner";
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+import { httpBatchLink } from "@trpc/client";
 import {
   isRouteErrorResponse,
   Links,
@@ -6,18 +13,10 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 import type { Route } from "./+types/root";
 import stylesheet from "./app.css?url";
-import {
-  QueryCache,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
-import { httpBatchLink } from "@trpc/client";
-import { useState } from "react";
 import { trpc } from "./utils/trpc";
-import { toast } from "sonner";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },

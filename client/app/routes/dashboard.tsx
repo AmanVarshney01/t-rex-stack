@@ -1,17 +1,25 @@
 import { authClient } from "@/lib/auth-client";
-import { Book } from "lucide-react";
+import { Book, Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { Navigate, Outlet, useNavigate } from "react-router";
 
 export default function Dashboard() {
-  const session = authClient.useSession();
-  const navigate = useNavigate();
+  let navigate = useNavigate();
+  const { data: session, isPending } = authClient.useSession();
 
   useEffect(() => {
-    if (!session.data) {
-      navigate("/");
+    if (session) {
+      navigate("/dashboard");
     }
   }, [session]);
+
+  if (isPending) {
+    return (
+      <div className="flex h-svh items-center justify-center">
+        <Loader2 size="48" className="animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="grid h-svh grid-rows-[auto_1fr]">
