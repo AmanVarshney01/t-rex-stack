@@ -3,17 +3,42 @@ import { fromNodeHeaders, toNodeHandler } from "better-auth/node";
 import cors from "cors";
 import express, { Request, Response } from "express";
 import { auth } from "./lib/auth";
+import { initTRPC } from "@trpc/server";
+import { z } from "zod";
+import { createExpressMiddleware } from "@trpc/server/adapters/express";
+
+const t = initTRPC.create();
+
+const appRouter = t.router({
+  healthCheck: t.procedure.query(() => {
+    return "OK";
+  }),
+  logServer: t.procedure
+    .input(
+      z.object({
+        message: z.string(),
+      }),
+    )
+    .mutation((req) => {
+      console.log(req);
+      return true;
+    }),
+});
+
+export type AppRouter = typeof appRouter;
 
 const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_URL,
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   }),
 );
+
+app.use("/trpc", createExpressMiddleware({ router: appRouter }));
 
 app.all("/api/auth/*", toNodeHandler(auth));
 

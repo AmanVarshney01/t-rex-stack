@@ -9,6 +9,10 @@ import {
 import { Toaster } from "@/components/ui/sonner";
 import type { Route } from "./+types/root";
 import stylesheet from "./app.css?url";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { httpBatchLink } from "@trpc/client";
+import { useState } from "react";
+import { trpc } from "./utils/trpc";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -44,7 +48,22 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  const queryClient = new QueryClient();
+  const trpcClient = trpc.createClient({
+    links: [
+      httpBatchLink({
+        url: `${import.meta.env.VITE_SERVER_URL}/trpc`,
+      }),
+    ],
+  });
+
+  return (
+    <trpc.Provider client={trpcClient} queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <Outlet />
+      </QueryClientProvider>
+    </trpc.Provider>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

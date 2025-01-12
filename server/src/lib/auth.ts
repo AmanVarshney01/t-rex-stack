@@ -7,6 +7,6 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "mongodb",
   }),
-  trustedOrigins: ["http://localhost:5173", "http://localhost:8080"],
+  trustedOrigins: ["http://localhost:5173"],
   emailAndPassword: { enabled: true },
 });
