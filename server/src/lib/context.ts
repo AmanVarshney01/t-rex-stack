@@ -7,6 +7,8 @@ export async function createContext(opts: CreateExpressContextOptions) {
     headers: fromNodeHeaders(opts.req.headers),
   });
 
+  console.log("sessions: ", session);
+
   return {
     session,
   };

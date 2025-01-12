@@ -9,10 +9,15 @@ import {
 import { Toaster } from "@/components/ui/sonner";
 import type { Route } from "./+types/root";
 import stylesheet from "./app.css?url";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import { useState } from "react";
 import { trpc } from "./utils/trpc";
+import { toast } from "sonner";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -48,11 +53,31 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    queryCache: new QueryCache({
+      onError: (error) => {
+        toast.error(error.message, {
+          action: {
+            label: "retry",
+            onClick: () => {
+              queryClient.invalidateQueries();
+            },
+          },
+        });
+      },
+    }),
+  });
+
   const trpcClient = trpc.createClient({
     links: [
       httpBatchLink({
         url: `${import.meta.env.VITE_SERVER_URL}/trpc`,
+        fetch(url, options) {
+          return fetch(url, {
+            ...options,
+            credentials: "include",
+          });
+        },
       }),
     ],
   });

@@ -1,7 +1,18 @@
+import { authClient } from "@/lib/auth-client";
 import { Book } from "lucide-react";
-import { Outlet } from "react-router";
+import { useEffect } from "react";
+import { Navigate, Outlet, useNavigate } from "react-router";
 
 export default function Dashboard() {
+  const session = authClient.useSession();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!session.data) {
+      navigate("/");
+    }
+  }, [session]);
+
   return (
     <div className="grid h-svh grid-rows-[auto_1fr]">
       <header className="flex flex-row p-4">

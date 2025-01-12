@@ -18,10 +18,8 @@ app.use(
   }),
 );
 
-app.all("/api/auth/*", toNodeHandler(auth));
-
 app.use("/trpc", createExpressMiddleware({ router: appRouter, createContext }));
-
+app.all("/api/auth/*", toNodeHandler(auth));
 app.use(express.json());
 
 app.listen(PORT, () => {

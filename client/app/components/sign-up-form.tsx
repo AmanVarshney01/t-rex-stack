@@ -8,7 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { signIn, signUp, useSession } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 import { signInSchema, signUpSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader, Loader2 } from "lucide-react";
@@ -20,7 +20,7 @@ import * as z from "zod";
 
 export default function SignUpForm() {
   let navigate = useNavigate();
-  const { data: session, isPending } = useSession();
+  const { data: session, isPending } = authClient.useSession();
   const [isSignUp, setIsSignUp] = useState(false);
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export default function SignUpForm() {
 
   const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
     if (isSignUp) {
-      await signUp.email(
+      await authClient.signUp.email(
         {
           email: values.email,
           password: values.password,
@@ -60,7 +60,7 @@ export default function SignUpForm() {
         },
       );
     } else {
-      await signIn.email(
+      await authClient.signIn.email(
         {
           email: values.email,
           password: values.password,

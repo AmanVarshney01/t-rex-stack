@@ -11,6 +11,8 @@ export const protectedProcedure = t.procedure.use(function isAuthed(opts) {
   if (!opts.ctx.session) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
+      message: "Authentication required",
+      cause: "No session",
     });
   }
   return opts.next({
