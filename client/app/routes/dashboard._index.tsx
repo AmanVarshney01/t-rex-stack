@@ -8,11 +8,12 @@ export default function DashboardIndex() {
     <div>
       {healthCheck.data}
       <button
-        onClick={async () =>
-          logServer.mutateAsync({
+        onClick={async () => {
+          const res = await logServer.mutateAsync({
             message: "Hello from the client",
-          })
-        }
+          });
+          console.log(res?.name);
+        }}
       >
         click me
       </button>
