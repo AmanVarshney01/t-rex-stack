@@ -1,10 +1,10 @@
-import { fromNodeHeaders, toNodeHandler } from "better-auth/node";
+import { createExpressMiddleware } from "@trpc/server/adapters/express";
+import { toNodeHandler } from "better-auth/node";
 import cors from "cors";
 import express from "express";
 import { auth } from "./lib/auth";
-import { createExpressMiddleware } from "@trpc/server/adapters/express";
-import { appRouter } from "./routers";
 import { createContext } from "./lib/context";
+import { appRouter } from "./routers";
 
 const app = express();
 const PORT = 8080;
