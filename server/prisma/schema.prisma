@@ -80,10 +80,10 @@ model Book {
   author      String
   description String?
   userId      String
-  @@unique([id, userId])
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  @@unique([id, userId])
   @@map("book")
 }
