@@ -14,24 +14,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export default function DashboardIndex() {
-  const [newBook, setNewBook] = useState({
-    title: "",
-    author: "",
-    description: "",
-  });
-
   const { data: books, isLoading, refetch } = trpc.books.getAll.useQuery();
-
-  const createBook = trpc.books.create.useMutation({
-    onSuccess: () => {
-      refetch();
-      setNewBook({ title: "", author: "", description: "" });
-      toast.success("Book created successfully!");
-    },
-    onError: (error) => {
-      toast.error("Failed to create book: " + error.message);
-    },
-  });
 
   const deleteBook = trpc.books.delete.useMutation({
     onSuccess: () => {
@@ -42,11 +25,6 @@ export default function DashboardIndex() {
       toast.error("Failed to delete book: " + error.message);
     },
   });
-
-  const handleCreateBook = (e: React.FormEvent) => {
-    e.preventDefault();
-    createBook.mutate(newBook);
-  };
 
   return (
     <div className="container mx-auto py-8">

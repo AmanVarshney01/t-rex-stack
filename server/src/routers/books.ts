@@ -1,8 +1,7 @@
-import { PrismaClient } from "@prisma/client";
-import { protectedProcedure, router } from "../lib/trpc";
-import prisma from "../../prisma";
-import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import { z } from "zod";
+import prisma from "../../prisma";
+import { protectedProcedure, router } from "../lib/trpc";
 
 const bookSchema = z.object({
   title: z.string().min(1),

@@ -1,8 +1,6 @@
 import UserMenu from "@/components/user-menu";
-import { authClient } from "@/lib/auth-client";
-import { Book, Loader2 } from "lucide-react";
-import { useEffect } from "react";
-import { Navigate, Outlet, useNavigate } from "react-router";
+import { Book } from "lucide-react";
+import { Outlet } from "react-router";
 
 export default function Dashboard() {
   return (
