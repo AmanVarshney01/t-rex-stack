@@ -10,16 +10,15 @@ import {
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
+import { Skeleton } from "./ui/skeleton";
 
 export default function UserMenu() {
   const navigate = useNavigate();
   const { data: session, isPending } = authClient.useSession();
 
-  useEffect(() => {
-    if (!session) {
-      navigate("/");
-    }
-  }, [session]);
+  if (isPending) {
+    return <Skeleton className="h-9 w-24" />;
+  }
 
   return (
     <DropdownMenu>

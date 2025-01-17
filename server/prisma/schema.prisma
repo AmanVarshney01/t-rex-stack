@@ -23,6 +23,7 @@ model User {
   updatedAt     DateTime
   sessions      Session[]
   accounts      Account[]
+  books         Book[]
 
   @@unique([email])
   @@map("user")
@@ -71,4 +72,18 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model Book {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  author      String
+  description String?
+  userId      String
+  @@unique([id, userId])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("book")
 }
