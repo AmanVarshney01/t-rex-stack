@@ -5,7 +5,8 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "nodemon",
-    "build": "tsc",
+    "build": "tsc --build",
+    "start": "node ./dist/src/index.js",
     "db:push": "prisma db push",
     "db:studio": "prisma studio"
   },
